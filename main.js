@@ -15,7 +15,7 @@ switch(menuIniciarSesion){
         iniciarSesion() 
         break;
     case 2:
-        errorIncioSesion=true
+        
         break;
     case 3:
         console.log("Adios");
