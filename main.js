@@ -30,7 +30,7 @@
             registrarUsuario()
             break;
         case 3:
-            console.log("Adios");
+            console.log("Gracias por usar el sistema, vuelva pronto");
             return
             break;
         default:
@@ -55,7 +55,7 @@
                     usuariosBancarios[i].intentos = 0;
                     actualizarStorage();
                     console.log("Sesión con éxito");
-                    control(usuariosBancarios[i]);
+                    transacciones(usuariosBancarios[i]);
                     return;
                 }
             }
@@ -80,17 +80,26 @@
                     break;
                 }
             }
-        } else {
+        }else{
             console.log("El usuario no existe en el sistema");
+            let salirSistemaIniciarSesion=false;
+            do{
             let salirSistema = parseInt(prompt("¿Desea salir? (1. Si / 2. No)"));
-            if (salirSistema === 1) return;
+            if (salirSistema===1){
+                return;
+            }else if(salirSistema===2){
+                salirSistemaIniciarSesion=true;
+            }else{
+                console.log("Opcion no valida, volver a intentar");
+            }
+            }while(salirSistemaIniciarSesion===false);
         }
-    } while (errorUsuarioEntrada === false);
+    } while (errorUsuarioEntrada===false);
     }
 //----------------------------------------------------------------------------------------------------------
     function registrarUsuario(){
     //LE FALTA VALIDAR MEJOR LOS VACIOS, POR EL MOMENTO MEDIO FUNCIONA.
-    //------Variables-------------------
+    //------Variables de entrada--------
         let nombreUsuarioRegistrarEntrada
         let passwordRegistrarEntrada
         let paswordEntradaConfirmar
@@ -153,30 +162,38 @@
         console.log(`¡Usuario '${nombreUsuarioRegistrarEntrada}' registrado con éxito!`);
         alert("Registro completado. Ya puedes iniciar sesión.");
     }
-        
-    
 //----------------------------------------------------------------------------------------------------------
-    function control(menudeControl){
+    function transacciones(usuariosBancarios){
+        let menuTransacciones
         do{
-        let menudeControl = parseInt(prompt(`control\n
-            1. ver saldo\n
-            2. consignar\n
-            3. Cerrar sesion\n
+        menuTransacciones = parseInt(prompt(`--Transacciones--\n
+            1. Retirar\n
+            2. Consultar saldo\n
+            3. consignar\n
+            4. Consultar Movimientos\n
+            5. Cerrar Sesion\n
             `));
-        switch(menudeControl){
+        switch(menuTransacciones){
             case 1: 
-                console.log("Ver saldo");
+                
                 break;
             case 2:
-                console.log("monto");
+                
                 break;
             case 3:
+
+                break;
+            case 4:
+                
+                break;
+            case 5:
                 console.log("Sesion cerrada con exito");
                 return
                 break;
             default:
-                console.log("opcion seleccionada '"+menudeControl+"' no valida");
+                console.log("opcion seleccionada '"+menuTransacciones+"' no valida");
                 break;
         }
-    }while(menudeControl!=3);
+    }while(menuTransacciones!=5);
     }
+//----------------------------------------------------------------------------------------------------------
