@@ -160,7 +160,7 @@ function loginIniciar(menuIniciarSesion){
         alert("Registro completado. Ya puedes iniciar sesión.");
     }
 //----------------------------------------------------------------------------------------------------------
-    function transacciones(usuariosBancarios){
+    function transacciones(nombreUsuario){
         let menuTransacciones
         do{
         menuTransacciones = parseInt(prompt(`--Transacciones--\n
@@ -172,16 +172,16 @@ function loginIniciar(menuIniciarSesion){
             `));
         switch(menuTransacciones){
             case 1: 
-                
+                retirar(nombreUsuario)
                 break;
             case 2:
-                
+                consultarSaldo(nombreUsuario)
                 break;
             case 3:
-
+                consignarSaldo(nombreUsuario)
                 break;
             case 4:
-                
+                consultarMovimientos(nombreUsuario)
                 break;
             case 5:
                 console.log("Sesion cerrada con exito");
@@ -194,10 +194,55 @@ function loginIniciar(menuIniciarSesion){
     }while(menuTransacciones!=5);
     }
 //----------------------------------------------------------------------------------------------------------
-    function retirar(usuariosBancarios){
+    function retirar(nombreUsuario){
+        let montoRetirarEntrada
+        let errorMontoRetirarEntrada=false
+        do{
+            montoRetirarEntrada=parseFloat(prompt("Monto a retirar: "))
+            if(montoRetirarEntrada<=0||montoRetirarEntrada>nombreUsuario.saldo){
+                console.log("El campo es incorrecto");
+            }else{
+                nombreUsuario.saldo-=montoRetirarEntrada
+                nombreUsuario.movimientos.push(`Retiro: -$${montoRetirarEntrada}`);
+                actualizarStorage()
+                errorMontoRetirarEntrada=true
+            }
+        }while(errorMontoRetirarEntrada==false);
+    
+        console.log("Su saldo actual es de: "+nombreUsuario.saldo);
 
     }
 //----------------------------------------------------------------------------------------------------------
-    function consultarSaldo(usuariosBancarios){
-        
+    function consultarSaldo(nombreUsuario){
+        console.log("Su saldo es: "+nombreUsuario.saldo);
     }
+//----------------------------------------------------------------------------------------------------------
+    function consignarSaldo(nombreUsuario){
+        let montoConsignarSaldo
+        let errorConsignarSaldo=false
+        do{
+            montoConsignarSaldo=parseFloat(prompt("Monto a consignar: "))
+                if(montoConsignarSaldo<=0){
+                    console.log("El campo es incorrecto, volver a intentar");
+                }else{
+                    nombreUsuario.saldo+=montoConsignarSaldo
+                    nombreUsuario.movimientos.push(`Consignacion: -$${montoConsignarSaldo}`);
+                    actualizarStorage()
+                    errorConsignarSaldo=true
+                }
+        }while(errorConsignarSaldo==false);
+        console.log("!Consignacion con exito¡");
+        console.log("Su saldo actual es de: "+nombreUsuario.saldo);
+    }
+//----------------------------------------------------------------------------------------------------------
+    function consultarMovimientos(nombreUsuario) {
+    console.log(`--- Historial de Movimientos de ${nombreUsuario.nombreUsuario} ---`);
+    if(nombreUsuario.movimientos.length===0){
+                    console.log("NO hay moviemientos");
+                    return;
+                }
+        for(let i=0; i<nombreUsuario.movimientos.length; i++){
+                console.log((i+1)+". "+nombreUsuario.movimientos[i]);
+        }
+}
+    
