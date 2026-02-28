@@ -11,12 +11,9 @@
     function actualizarStorage() {
     localStorage.setItem('cuentas', JSON.stringify(usuariosBancarios));
 }
-
-
-
     loginIniciar()
 //----------------------------------------------------------------------------------------------------------
-    function loginIniciar(menuIniciarSesion){
+function loginIniciar(menuIniciarSesion){
     do{
     let menuIniciarSesion=parseInt(prompt("Login\n"+
         "1.Iniciar sesion\n"+
@@ -197,3 +194,10 @@
     }while(menuTransacciones!=5);
     }
 //----------------------------------------------------------------------------------------------------------
+    function retirar(usuariosBancarios){
+
+    }
+//----------------------------------------------------------------------------------------------------------
+    function consultarSaldo(usuariosBancarios){
+        
+    }
