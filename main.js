@@ -11,11 +11,10 @@
     function actualizarStorage() {
     localStorage.setItem('cuentas', JSON.stringify(usuariosBancarios));
 }
-    loginIniciar()
 //----------------------------------------------------------------------------------------------------------
-function loginIniciar(menuIniciarSesion){
+    let menuIniciarSesion
     do{
-    let menuIniciarSesion=parseInt(prompt("Login\n"+
+        menuIniciarSesion=parseInt(prompt("Login\n"+
         "1.Iniciar sesion\n"+
         "2.Registrarse\n"+
         "3.Salir\n"));
@@ -28,14 +27,12 @@ function loginIniciar(menuIniciarSesion){
             break;
         case 3:
             console.log("Gracias por usar el sistema, vuelva pronto");
-            return
             break;
         default:
             console.log(`La opcion seleccionada '${menuIniciarSesion}' no es valida, volver intentar`);
             break;
     }
     }while(menuIniciarSesion!=3);
-    }
 //----------------------------------------------------------------------------------------------------------
     function iniciarSesion() {
     let errorUsuarioEntrada = false;
@@ -95,13 +92,11 @@ function loginIniciar(menuIniciarSesion){
     }
 //----------------------------------------------------------------------------------------------------------
     function registrarUsuario(){
-    //LE FALTA VALIDAR MEJOR LOS VACIOS, POR EL MOMENTO MEDIO FUNCIONA.
-    //------Variables de entrada--------
         let nombreUsuarioRegistrarEntrada
         let passwordRegistrarEntrada
         let paswordEntradaConfirmar
         let montoInicialEntrada
-    //---------------------------------
+
         let errorVacioNombreEntrada=false
         do{
         nombreUsuarioRegistrarEntrada=prompt("Nombre de Usuario: ")
@@ -185,7 +180,6 @@ function loginIniciar(menuIniciarSesion){
                 break;
             case 5:
                 console.log("Sesion cerrada con exito");
-                return
                 break;
             default:
                 console.log("opcion seleccionada '"+menuTransacciones+"' no valida");
@@ -200,21 +194,27 @@ function loginIniciar(menuIniciarSesion){
         do{
             montoRetirarEntrada=parseFloat(prompt("Monto a retirar: "))
             if(montoRetirarEntrada<=0||montoRetirarEntrada>nombreUsuario.saldo){
-                console.log("El campo es incorrecto");
+                if(montoRetirarEntrada>nombreUsuario.saldo){
+                    console.log("¡El saldo es insuficiente!");
+                    errorMontoRetirarEntrada=true
+                    return
+                }
+                console.log("¡El campo es incorrecto");
             }else{
                 nombreUsuario.saldo-=montoRetirarEntrada
-                nombreUsuario.movimientos.push(`Retiro: -$${montoRetirarEntrada}`);
+                nombreUsuario.movimientos.push(`${new Date().toLocaleString()} Retiro: -$${montoRetirarEntrada}`);
                 actualizarStorage()
                 errorMontoRetirarEntrada=true
             }
         }while(errorMontoRetirarEntrada==false);
-    
+        console.log("¡Retiro con exito!");
         console.log("Su saldo actual es de: "+nombreUsuario.saldo);
 
     }
 //----------------------------------------------------------------------------------------------------------
     function consultarSaldo(nombreUsuario){
-        console.log("Su saldo es: "+nombreUsuario.saldo);
+        console.log("--Saldo--");
+        console.log("Su saldo actual: "+nombreUsuario.saldo);
     }
 //----------------------------------------------------------------------------------------------------------
     function consignarSaldo(nombreUsuario){
@@ -223,10 +223,10 @@ function loginIniciar(menuIniciarSesion){
         do{
             montoConsignarSaldo=parseFloat(prompt("Monto a consignar: "))
                 if(montoConsignarSaldo<=0){
-                    console.log("El campo es incorrecto, volver a intentar");
+                    console.log("¡El campo es incorrecto!");
                 }else{
                     nombreUsuario.saldo+=montoConsignarSaldo
-                    nombreUsuario.movimientos.push(`Consignacion: -$${montoConsignarSaldo}`);
+                    nombreUsuario.movimientos.push(`${new Date().toLocaleString()} Consignacion: +$${montoConsignarSaldo}`);
                     actualizarStorage()
                     errorConsignarSaldo=true
                 }
@@ -236,13 +236,12 @@ function loginIniciar(menuIniciarSesion){
     }
 //----------------------------------------------------------------------------------------------------------
     function consultarMovimientos(nombreUsuario) {
-    console.log(`--- Historial de Movimientos de ${nombreUsuario.nombreUsuario} ---`);
+    console.log(`Movimientos`);
     if(nombreUsuario.movimientos.length===0){
-                    console.log("NO hay moviemientos");
-                    return;
-                }
-        for(let i=0; i<nombreUsuario.movimientos.length; i++){
-                console.log((i+1)+". "+nombreUsuario.movimientos[i]);
-        }
+        console.log("No hay moviemientos");
+    }
+    for(let i=0; i<nombreUsuario.movimientos.length; i++){
+        console.log((i+1)+". "+nombreUsuario.movimientos[i]);
+    }
 }
     
