@@ -163,7 +163,8 @@
             2. Consultar saldo\n
             3. consignar\n
             4. Consultar Movimientos\n
-            5. Cerrar Sesion\n
+            5. Transferir\n
+            6. Cerrar sesion
             `));
         switch(menuTransacciones){
             case 1: 
@@ -179,13 +180,16 @@
                 consultarMovimientos(nombreUsuario)
                 break;
             case 5:
+                transferir(nombreUsuario)
+                break;
+            case 6:
                 console.log("Sesion cerrada con exito");
                 break;
             default:
                 console.log("opcion seleccionada '"+menuTransacciones+"' no valida");
                 break;
         }
-    }while(menuTransacciones!=5);
+    }while(menuTransacciones!=6);
     }
 //----------------------------------------------------------------------------------------------------------
     function retirar(nombreUsuario){
@@ -235,7 +239,7 @@
         console.log("Su saldo actual es de: "+nombreUsuario.saldo);
     }
 //----------------------------------------------------------------------------------------------------------
-    function consultarMovimientos(nombreUsuario) {
+    function consultarMovimientos(nombreUsuario){
     console.log(`Movimientos`);
     if(nombreUsuario.movimientos.length===0){
         console.log("No hay moviemientos");
@@ -243,5 +247,44 @@
     for(let i=0; i<nombreUsuario.movimientos.length; i++){
         console.log((i+1)+". "+nombreUsuario.movimientos[i]);
     }
-}
-    
+    }
+//----------------------------------------------------------------------------------------------------------
+    function transferir(nombreUsuario){
+        let nombreUsuarioTransferirEntrada
+        let montoTransferirEntrada
+        let usuarioEncontradoTranferir=false
+        let errorTransferir=false
+        do{
+            nombreUsuarioTransferirEntrada=prompt("usuario: ")
+            montoTransferirEntrada=parseFloat(prompt("Monto: "))
+        for(let i=0; i<usuariosBancarios.length; i++){
+            if(nombreUsuarioTransferirEntrada===usuariosBancarios[i].nombreUsuario){
+                usuarioEncontradoTranferir=true 
+                if(montoTransferirEntrada>nombreUsuario.saldo){
+                console.log("Saldo insuficiente");
+                errorTransferir=true
+                break;
+                }
+                nombreUsuario.saldo-=montoTransferirEntrada
+                usuariosBancarios[i].saldo+=montoTransferirEntrada
+                nombreUsuario.movimientos.push(`${new Date().toLocaleString()} Transferencia enviada a ${usuariosBancarios[i].nombreUsuario}: -$${montoTransferirEntrada}`);
+                usuariosBancarios[i].movimientos.push(`${new Date().toLocaleString()} Transferencia recibida de ${nombreUsuario.nombreUsuario}: +$${montoTransferirEntrada}`);
+                actualizarStorage()
+                errorTransferir=true
+                console.log("¡Transferencia con exito!");
+                console.log("Su saldo actual es: "+nombreUsuario.saldo);
+            }
+        }
+
+            if(usuarioEncontradoTranferir===false){
+                let salirTransferencia= parseInt(prompt(`El usuario no existe, desea salir (1.Si / 2.No)`));
+                    if(salirTransferencia===1){
+                        errorTransferir=true
+                    }else if(salirTransferencia===2){
+                        errorTransferir=false
+                    }else{
+                        console.log("Opcion no valida");
+                    }
+            } 
+        }while(errorTransferir===false);
+    }
