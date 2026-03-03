@@ -91,7 +91,7 @@
     } while (errorUsuarioEntrada===false);
     }
 //----------------------------------------------------------------------------------------------------------
-    function registrarUsuario(){
+    function registrarUsuario(){ 
         let nombreUsuarioRegistrarEntrada
         let passwordRegistrarEntrada
         let paswordEntradaConfirmar
@@ -152,7 +152,7 @@
         actualizarStorage();
 
         console.log(`¡Usuario '${nombreUsuarioRegistrarEntrada}' registrado con éxito!`);
-        alert("Registro completado. Ya puedes iniciar sesión.");
+        console.log("Registro completado. Ya puedes iniciar sesión.");
     }
 //----------------------------------------------------------------------------------------------------------
     function transacciones(nombreUsuario){
@@ -261,9 +261,14 @@
             if(nombreUsuarioTransferirEntrada===usuariosBancarios[i].nombreUsuario){
                 usuarioEncontradoTranferir=true 
                 if(montoTransferirEntrada>nombreUsuario.saldo){
-                console.log("Saldo insuficiente");
-                errorTransferir=true
-                break;
+                    console.log("Saldo insuficiente");
+                    errorTransferir=true
+                    break;
+                }
+                if(montoTransferirEntrada<=0){
+                    console.log(`El campo no puede ser '${montoTransferirEntrada}'`);
+                    errorTransferir=true 
+                    break;
                 }
                 nombreUsuario.saldo-=montoTransferirEntrada
                 usuariosBancarios[i].saldo+=montoTransferirEntrada
