@@ -216,7 +216,7 @@
 
     }
 //----------------------------------------------------------------------------------------------------------
-    function consultarSaldo(nombreUsuario){
+        function consultarSaldo(nombreUsuario){
         console.log("--Saldo--");
         console.log("Su saldo actual: "+nombreUsuario.saldo);
     }
@@ -275,16 +275,24 @@
                 console.log("Su saldo actual es: "+nombreUsuario.saldo);
             }
         }
-
             if(usuarioEncontradoTranferir===false){
-                let salirTransferencia= parseInt(prompt(`El usuario no existe, desea salir (1.Si / 2.No)`));
-                    if(salirTransferencia===1){
-                        errorTransferir=true
-                    }else if(salirTransferencia===2){
-                        errorTransferir=false
-                    }else{
-                        console.log("Opcion no valida");
+                let salirTransferencia
+                let errorSalirTransferencia=false
+                do{
+                    salirTransferencia= parseInt(prompt(`El usuario no existe, desea salir (1.Si / 2.No)`));
+                    switch(salirTransferencia){
+                        case 1:
+                            errorTransferir=true
+                            errorSalirTransferencia=true
+                            break;
+                        case 2: 
+                            errorSalirTransferencia=true
+                            break;
+                        default:
+                            console.log(`La opcion '${salirTransferencia}' no es valida`);
+                            break;
                     }
+                }while(errorSalirTransferencia==false);
             } 
         }while(errorTransferir===false);
     }
