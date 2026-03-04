@@ -1,6 +1,6 @@
     let usuariosBancarios = JSON.parse(localStorage.getItem('cuentas')) || [
         {
-            nombreUsuario: 'adrian123',
+            nombreUsuario: 'adrian',
             password: '123',
             saldo: 1000,
             estado: true,
@@ -32,7 +32,7 @@
                 console.log("Gracias por usar el sistema, vuelva pronto");
                 break;
             default:
-                console.log(`La opcion seleccionada '${menuIniciarSesion}' no es valida, volver intentar`);
+                console.log(`La opcion seleccionada no es valida, volver intentar`);
                 break;
         }
     }while(menuIniciarSesion!=3);
@@ -43,35 +43,35 @@
 
         while (errorUsuarioEntrada) {
             let usuarioEntrada = prompt("Usuario:");
-            let passwordEntrada = prompt("Contraseña:");
-
             for (let i = 0; i < usuariosBancarios.length; i++) {
                 if (usuarioEntrada === usuariosBancarios[i].nombreUsuario) {
                     if (usuariosBancarios[i].estado === false) {
                         console.log(`Su cuenta se encuentra bloqueada.`);
                         errorUsuarioEntrada = false;
                         break;
-                    } else if (passwordEntrada === usuariosBancarios[i].password) {
-                        if (usuariosBancarios[i].estado === true) {
-                            console.log("Sesión con éxito");
-                            transacciones(usuariosBancarios[i]);
-                        } else {
-                            console.log(`Su cuenta se encuentra bloqueada.`);
-                            errorUsuarioEntrada = false;
-                            break;
-                        }
                     } else {
-                        intentosUsuario ++;
-                        if (intentosUsuario < 3) {
-                        console.log(`La contraseña es incorrecta. Lleva ${intentosUsuario} intento/s`);
+                        let passwordEntrada = prompt("Contraseña:");
+                        if (passwordEntrada === `` || passwordEntrada === ` ` || passwordEntrada === null) {
+                            console.log(`La contraseña no puede estar vacia.`);
+                        } else {
+                            if (passwordEntrada === usuariosBancarios[i].password) {
+                                console.log("Sesión con éxito");
+                                transacciones(usuariosBancarios[i]);
+                                return;
+                            } else {
+                                intentosUsuario ++;
+                                if (intentosUsuario < 3) {
+                                    console.log(`La contraseña es incorrecta. Lleva ${intentosUsuario} intento/s`);
+                                }
+                                if (intentosUsuario === 3) {
+                                    usuariosBancarios[i].estado = false;
+                                    actualizarStorage();
+                                    console.log(`Su cuenta a sido bloqueada por 3 intentos fallidos. Debera esperar 24 horas`);
+                                    errorUsuarioEntrada = false;
+                                }
+                                break;
+                            }
                         }
-                        if (intentosUsuario === 3) {
-                            usuariosBancarios[i].estado = false;
-                            actualizarStorage();
-                            console.log(`Su cuenta a sido bloqueada por 3 intentos fallidos. Debera esperar 24 horas`);
-                            errorUsuarioEntrada = false;
-                        }
-                        break;
                     }
                 } else {
                     if (i == (usuariosBancarios.length - 1)) {
@@ -91,17 +91,25 @@
         let errorVacioNombreEntrada = true
         while(errorVacioNombreEntrada) {
             nombreUsuarioRegistrarEntrada=prompt("Nombre de Usuario: ")
-            if(nombreUsuarioRegistrarEntrada==="" || nombreUsuarioRegistrarEntrada===" "){
+            if(nombreUsuarioRegistrarEntrada==="" || nombreUsuarioRegistrarEntrada===" "  || nombreUsuarioRegistrarEntrada=== null){
                 console.log("El campo no puede estar vacio");
             }else{
-                errorVacioNombreEntrada = false
+                for (let i = 0; i < usuariosBancarios.length; i++) {
+                    if (nombreUsuarioRegistrarEntrada === usuariosBancarios[i].nombreUsuario) {
+                        console.log(`Ya exite una cuenta con ese usuario.`);
+                        errorVacioNombreEntrada = true;
+                        break;
+                    } else {
+                        errorVacioNombreEntrada = false
+                    }
+                }
             }
         }
 
         let errorVacioContraseñaEntrada = true
         while(errorVacioContraseñaEntrada) {
             passwordRegistrarEntrada=prompt("Contraseña: ")
-            if(passwordRegistrarEntrada==="" || passwordRegistrarEntrada===" "){
+            if(passwordRegistrarEntrada==="" || passwordRegistrarEntrada===" " || passwordRegistrarEntrada === null){
                 console.log("El campo no puede estar vacio");
             }else{
                 errorVacioContraseñaEntrada = false
@@ -111,7 +119,7 @@
         let errorPasswordConfirmar = true
         while(errorPasswordConfirmar) {
             paswordEntradaConfirmar = prompt("Confirmar contraseña: ")
-            if(paswordEntradaConfirmar==="" || paswordEntradaConfirmar===" "){
+            if(paswordEntradaConfirmar==="" || paswordEntradaConfirmar===" " || paswordEntradaConfirmar === null){
                 console.log("El campo no puede estar vacio");
             } else {
                 if(paswordEntradaConfirmar===passwordRegistrarEntrada){
@@ -125,11 +133,16 @@
 
         let errorMontoInicalEntrada = true
         while(errorMontoInicalEntrada){
-            montoInicialEntrada=parseFloat(prompt("Monto inicial: "))
-            if(montoInicialEntrada <= 0){
-                console.log("El campo no puede ser 0 o un numero negativo");
+            montoInicialEntrada=prompt("Monto inicial: ")
+            if(montoInicialEntrada === "" || montoInicialEntrada === " " || montoInicialEntrada === null){
+                console.log(`El campo no puede estar vacio`);
             }else{
-                errorMontoInicalEntrada = false
+                montoInicialEntrada = parseFloat(montoInicialEntrada);
+                if (montoInicialEntrada <= 0) {
+                    console.log(`El campo no puede ser 0 o un numero negativo`);
+                } else {
+                    errorMontoInicalEntrada = false
+                }
             }
         }
 
@@ -150,40 +163,47 @@
     }
 //----------------------------------------------------------------------------------------------------------
     function transacciones(nombreUsuario){
-        let menuTransacciones
-        do{
-        menuTransacciones = parseInt(prompt(`--Transacciones--\n
+        let menuTransacciones = true
+        while(menuTransacciones) {
+        menuTransacciones = prompt(`--Transacciones--\n
             1. Retirar\n
             2. Consultar saldo\n
             3. consignar\n
             4. Consultar Movimientos\n
             5. Transferir\n
             6. Cerrar sesion
-            `));
-        switch(menuTransacciones){
-            case 1: 
-                retirar(nombreUsuario)
-                break;
-            case 2:
-                consultarSaldo(nombreUsuario)
-                break;
-            case 3:
-                consignarSaldo(nombreUsuario)
-                break;
-            case 4:
-                consultarMovimientos(nombreUsuario)
-                break;
-            case 5:
-                transferir(nombreUsuario)
-                break;
-            case 6:
-                console.log("Sesion cerrada con exito");
-                break;
-            default:
-                console.log("opcion seleccionada '"+menuTransacciones+"' no valida");
-                break;
-        }
-    }while(menuTransacciones!=6);
+            `);
+            if (menuTransacciones === "" || menuTransacciones === " " || menuTransacciones === null) {
+                menuTransacciones = true
+                console.log(`opcion seleccionada no valida`);
+            } else {
+                menuTransacciones = parseInt(menuTransacciones)
+                switch(menuTransacciones){
+                    case 1: 
+                        retirar(nombreUsuario)
+                        break;
+                    case 2:
+                        consultarSaldo(nombreUsuario)
+                        break;
+                    case 3:
+                        consignarSaldo(nombreUsuario)
+                        break;
+                    case 4:
+                        consultarMovimientos(nombreUsuario)
+                        break;
+                    case 5:
+                        transferir(nombreUsuario)
+                        break;
+                    case 6:
+                        menuTransacciones = false
+                        console.log("Sesion cerrada con exito");
+                        break;
+                    default:
+                        console.log("opcion seleccionada '"+menuTransacciones+"' no valida");
+                        break;
+                }
+            }
+        };
     }
 //----------------------------------------------------------------------------------------------------------
     function retirar(nombreUsuario){
@@ -220,10 +240,10 @@
         let errorConsignarSaldo=false
         do{
             montoConsignarSaldo=parseFloat(prompt("Monto a consignar: "))
-                if(montoConsignarSaldo<=0){
+                if(montoConsignarSaldo <= 0){
                     console.log("¡El campo es incorrecto!");
                 }else{
-                    nombreUsuario.saldo+=montoConsignarSaldo
+                    nombreUsuario.saldo += montoConsignarSaldo
                     nombreUsuario.movimientos.push(`${new Date().toLocaleString()} Consignacion: +$${montoConsignarSaldo}`);
                     actualizarStorage()
                     errorConsignarSaldo=true
