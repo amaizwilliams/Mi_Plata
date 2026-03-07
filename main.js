@@ -110,6 +110,7 @@
             }
         }
 
+        
         let errorVacioContraseñaEntrada = true
         while(errorVacioContraseñaEntrada) {
             passwordRegistrarEntrada=prompt("Contraseña: ")
