@@ -310,6 +310,7 @@
                                     errorTransferir = false;
                                     console.log("¡Transferencia con exito!");
                                     console.log("Su saldo actual es: "+nombreUsuario.saldo);
+                                    break;
                                 } else {
                                     if (i == (usuariosBancarios.length - 1)) {
                                         console.log(`El usuario no existe`);
